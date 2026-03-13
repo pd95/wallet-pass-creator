@@ -56,7 +56,8 @@ PARENTDIR="$(dirname "$PASSDIR")"
 
 OUTPUT="${PARENTDIR}/${PASSNAME}.pkpass"
 
-EXPORTPASS=dummy123
+# Per-run random PKCS#12 export password (avoid fixed secrets in repo/scripts).
+EXPORTPASS="$(openssl rand -base64 48 | tr -d '\n')"
 
 cleanup() {
   rm -rf "$TMP"
@@ -64,14 +65,18 @@ cleanup() {
 trap cleanup EXIT
 
 rm -rf "$TMP"
+# Restrict tmp artifacts to current user (id.p12/cert/pass copy during signing).
+umask 077
 mkdir -p "$TMP/pass" || exit 1
 
 security unlock-keychain -p "$PASSWORD" "$KEYCHAIN_PATH"
 
+# NOTE: `security export` requires `-P` for the PKCS#12 password.
+# We still randomize this value per run to reduce exposure risk.
 security export -k "$KEYCHAIN_PATH" -t identities -f pkcs12 -P "$EXPORTPASS" -o "$TMP/id.p12"
 
-openssl pkcs12 -in "$TMP/id.p12" -clcerts -nokeys -out "$TMP/cert.pem" -passin pass:$EXPORTPASS
-openssl pkcs12 -in "$TMP/id.p12" -nocerts -nodes -out "$TMP/key.pem" -passin pass:$EXPORTPASS
+# Read PKCS#12 password from fd 3, not argv (`pass:...`), to avoid leaking via process list.
+openssl pkcs12 -in "$TMP/id.p12" -clcerts -nokeys -out "$TMP/cert.pem" -passin fd:3 3<<<"$EXPORTPASS"
 
 cp -R "$PASSDIR"/. "$TMP/pass"/
 cd "$TMP/pass"
@@ -195,7 +200,10 @@ with open("manifest.json","w") as f:
     json.dump(m,f,separators=(",",":"))
 PY
 
-openssl smime -binary -sign -signer "$TMP/cert.pem" -inkey "$TMP/key.pem" -certfile "$WWDR" -in manifest.json -out signature -outform DER
+# Stream private key directly into `smime` so no plaintext `key.pem` is written to disk.
+# `-nodes` still emits an unencrypted key, but only over this pipe.
+openssl pkcs12 -in "$TMP/id.p12" -nocerts -nodes -passin fd:3 3<<<"$EXPORTPASS" \
+  | openssl smime -binary -sign -signer "$TMP/cert.pem" -inkey /dev/stdin -certfile "$WWDR" -in manifest.json -out signature -outform DER
 
 rm -f "$OUTPUT"
 zip -qr "$OUTPUT" *
