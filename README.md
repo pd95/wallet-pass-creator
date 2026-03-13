@@ -44,7 +44,7 @@ Download Apple's WWDR certificate and store it as:
 1. Initialize keychain for pass type
 
    ```bash
-   bin/init-pass-keychain.sh pass.example.offer password
+   bin/init-pass-keychain.sh pass.example.store-card.sample password
    ```
 
    This will create a new keychain DB under `certs/`, set its password and configuration
@@ -62,11 +62,11 @@ Download Apple's WWDR certificate and store it as:
    - Select "Pass Type IDs" on the right side to show all your registered pass types.
    - If you need to register a new Pass Type press (+).
      - Verify that "Pass Type IDs" is preselected and press "Continue"
-     - Specify a description and give an identifier "pass.com.example.event-101". Press "Continue".
+     - Specify a description and give an identifier `pass.example.store-card.sample` (matches the sample passes in `passes/`). Press "Continue".
      - Confirm your selection and press "Register"
 
 4. Select the pass type ID from the list
-   - Press "Create Certufucate" to add a new certificate.
+   - Press "Create Certificate" to add a new certificate.
    - Choose service "Pass Type ID Certificate" and press "Continue".
    - Enter a name for your pass certificate (purely informal to allow you manage the list).
    - Choose a Pass Type ID (you've previously registered)
@@ -76,7 +76,7 @@ Download Apple's WWDR certificate and store it as:
 5. Import Apple certificate
 
    ```bash
-   bin/import-pass-cert.sh pass.example.offer password ~/Downloads/pass.cer
+   bin/import-pass-cert.sh pass.example.store-card.sample password ~/Downloads/pass.cer
    ```
 
    This will import the new certificate to the relevant keychain, to form the full "identity"
@@ -84,7 +84,7 @@ Download Apple's WWDR certificate and store it as:
 6. Sign a pass
 
    ```bash
-   bin/sign-pass.sh pass.example.offer password passes/example-pass
+   bin/sign-pass.sh pass.example.store-card.sample password passes/example-pass
    ```
 
    `bin/sign-pass.sh` takes 3 required arguments:
@@ -100,7 +100,7 @@ Download Apple's WWDR certificate and store it as:
 
    ```bash
    bin/sign-pass.sh \
-     pass.example.offer \
+     pass.example.store-card.sample \
      password \
      passes/example-pass \
      --override-team \
