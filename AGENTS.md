@@ -34,12 +34,15 @@ Primary goals:
 4. Import cert:
    - `bin/import-pass-cert.sh <keychain_name> <password> <path_to_pass.cer>`
 5. Sign pass folder:
-   - `bin/sign-pass.sh <keychain_name> <password> <pass_folder>`
+   - `bin/sign-pass.sh <keychain_name> <password> <pass_folder> [--override-team] [--override-pass-id]`
    - Output is written next to folder: `<pass_folder_basename>.pkpass`.
 
 Example:
 - `bin/sign-pass.sh pass.example.offer mypass passes/my-pass`
 - Produces `passes/my-pass.pkpass`.
+
+Example with runtime overrides:
+- `bin/sign-pass.sh pass.example.offer mypass passes/my-pass --override-team --override-pass-id`
 
 ## Important Script Notes
 
@@ -47,6 +50,14 @@ Example:
 - `bin/sign-pass.sh` currently ignores custom output path/password arguments from `README.md`; it uses:
   - fixed export password `dummy123`
   - output path derived from input pass directory
+- `bin/sign-pass.sh` can override identifiers at sign time using certificate-derived values:
+  - `--override-team` -> `teamIdentifier`
+  - `--override-pass-id` -> `passTypeIdentifier`
+  - Overrides are applied only in `tmp/pass/pass.json`.
+- `bin/sign-pass.sh` validates Team ID consistency against the signing certificate subject OU and fails fast on mismatch.
+- `bin/sign-pass.sh` validates `passTypeIdentifier` consistency against signing certificate subject UID/CN and fails fast on mismatch.
+- If `teamIdentifier` is missing in `pass.json`, signing fails unless `--override-team` is used.
+- If `passTypeIdentifier` is missing in `pass.json`, signing fails unless `--override-pass-id` is used.
 - Signing script removes the entire repo `tmp/` directory at the end.
 
 ## Agent Guardrails
@@ -59,8 +70,9 @@ Example:
 
 ## Quick Validation
 
-- Script lint/syntax:
+- Script lint/syntax (required after shell script edits):
   - `bash -n bin/init-pass-keychain.sh bin/import-pass-cert.sh bin/sign-pass.sh`
+  - `zsh -n bin/init-pass-keychain.sh bin/import-pass-cert.sh bin/sign-pass.sh`
 - Sanity-check generated pass:
   - Ensure `manifest.json` and `signature` exist in signed archive.
   - `unzip -l passes/<name>.pkpass`

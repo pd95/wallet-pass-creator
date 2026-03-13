@@ -87,13 +87,36 @@ Download Apple's WWDR certificate and store it as:
    bin/sign-pass.sh pass.example.offer password passes/example-pass
    ```
 
-   `bin/sign-pass.sh` takes exactly 3 arguments:
+   `bin/sign-pass.sh` takes 3 required arguments:
    - `<keychain_name>` (without `.keychain-db`)
    - `<password>`
    - `<pass_folder>` (relative or absolute path)
 
+   Optional certificate-derived overrides (applied only in temporary signing copy, source `pass.json` is unchanged):
+   - `--override-team`
+   - `--override-pass-id`
+
+   Example with overrides:
+
+   ```bash
+   bin/sign-pass.sh \
+     pass.example.offer \
+     password \
+     passes/example-pass \
+     --override-team \
+     --override-pass-id
+   ```
+
    Output is written next to the pass folder as `<pass_folder_name>.pkpass`.
    Example: `passes/example-pass` -> `passes/example-pass.pkpass`.
+
+   Validation behavior:
+   - If `teamIdentifier` is missing in `pass.json`, signing fails unless `--override-team` is provided.
+   - If `passTypeIdentifier` is missing in `pass.json`, signing fails unless `--override-pass-id` is provided.
+   - The script extracts Team ID from the signing certificate subject (`OU`) and compares it with the effective team ID.
+   - The script extracts pass type identifier from the signing certificate subject (`UID` / `CN=Pass Type ID: ...`) and compares it with `pass.json`.
+   - If Team ID differs, signing fails unless `--override-team` is provided.
+   - If pass type differs, signing fails unless `--override-pass-id` is provided.
 
 ## Security Notes
 
