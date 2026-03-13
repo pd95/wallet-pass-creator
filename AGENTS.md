@@ -15,7 +15,7 @@ Primary goals:
 - `bin/import-pass-cert.sh`: imports the Apple-issued pass certificate into that keychain.
 - `bin/sign-pass.sh`: exports identity temporarily, signs pass, zips `.pkpass`, deletes `tmp/`.
 - `certs/`: keychain DB files and Apple WWDR cert (sensitive area).
-- `passes/`: pass source folders and sample/real examples.
+- `passes/`: pass source folders and sample passes.
 - `tmp/`: temporary export/signing workspace (removed by signing script).
 
 ## Environment Assumptions
@@ -55,7 +55,7 @@ Example:
 - Treat `certs/*.keychain-db` as sensitive; avoid modifying/deleting unless explicitly requested.
 - Do not run destructive cleanup in `certs/` or `passes/tmp_*` unless user asks.
 - Prefer editing scripts over adding new tooling unless needed.
-- If testing signing, use sample passes first (`passes/example-pass*`).
+- If testing signing, use sample passes first (`passes/example-pass` and `passes/example-pass-multilang`).
 
 ## Quick Validation
 

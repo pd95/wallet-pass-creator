@@ -1,0 +1,11 @@
+"organization_name" = "Mini-Shop Plus";
+"description_text" = "Mini-Shop Plus Mitgliedskarte";
+"logo_text" = "";
+"tier_label" = "Stufe";
+"tier_value" = "Gold";
+"card_label" = "Karte";
+"member_label" = "Mitglied";
+"points_label" = "Punkte";
+"support_label" = "Support";
+"support_value" = "mini-shop.example/support";
+"updated_label" = "Aktualisiert";

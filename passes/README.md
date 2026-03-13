@@ -9,6 +9,11 @@ A Wallet pass is a **ZIP package** with a strict structure:
 - `manifest.json` (generated at signing): SHA-1 hash of each file in the package (except `signature`)
 - `signature` (generated at signing): PKCS #7 detached signature over `manifest.json`
 
+## Sample Passes in This Repo
+
+- `passes/example-pass/`: minimal store-card sample (smallest useful baseline).
+- `passes/example-pass-multilang/`: design-focused sample with `en`, `de`, and `fr` localization plus full `icon`/`logo`/`strip` asset sets.
+
 ## Minimal Source Layout
 
 ```text
@@ -49,6 +54,8 @@ Common optional keys seen in production examples:
 - Put translatable labels/strings in `*.lproj/pass.strings` and reference keys from `pass.json`.
 - Keep asset naming exact (`icon.png`, `logo.png`, etc.).
 - Provide retina assets (`@2x`, `@3x`) for crisp rendering.
+- For cleaner header blending, prefer transparent `logo.png` assets with embedded branding text.
+- If branding text is already baked into `logo.png`, set `logoText` (or localized `logo_text`) to an empty string to avoid duplicate/overlapping header text.
 - Apple’s Wallet HIG (updated January 17, 2025) documents current image guidance and dimensions (for example logo `160x50 pt`, strip `375x123 pt`, thumbnail `90x90 pt`).
 
 ## Practical Best Practices
@@ -73,6 +80,41 @@ After signing:
 1. List archive contents:
    - `unzip -l passes/<your-pass>.pkpass`
 2. Confirm `manifest.json` and `signature` are included.
+
+## Testing the Pass
+
+### iOS Simulator quick test
+
+1. Start an iOS Simulator instance on macOS (Xcode -> Open Developer Tool -> Simulator).
+2. Build/sign your pass to produce `passes/<your-pass>.pkpass`.
+3. Drag and drop the `.pkpass` file onto the Simulator window.
+4. Expected result: Wallet opens and shows an Add Pass sheet.
+
+If Wallet does not open, or the pass is rejected, inspect logs as described below.
+
+### Inspecting Wallet/Passbook errors in Console.app
+
+1. Open macOS Console.app.
+2. Select your booted iOS Simulator device in the left sidebar.
+3. Filter to:
+   - Process: `Passbook`
+   - Subsystem: `com.apple.passkit`
+   - Message type: Errors only
+4. Optionally add text filters like `pkpass`, `signature`, `manifest`, `passTypeIdentifier`, `teamIdentifier`.
+5. Re-try drag/drop and watch fresh log lines.
+
+Terminal alternative (booted simulator):
+- `xcrun simctl spawn booted log stream --level error --style compact --predicate 'subsystem == "com.apple.passkit" AND process == "Passbook"'`
+
+Common error pattern:
+- `"The passTypeIdentifier or teamIdentifier provided may not match your certificate, or the certificate trust chain could not be verified."`
+
+Typical causes:
+- `passTypeIdentifier` in `pass.json` does not match the Pass Type ID used for certificate issuance.
+- `teamIdentifier` in `pass.json` does not match the Apple Developer Team that issued the certificate.
+- The signing certificate/private key pair is not the one expected for that pass type.
+- Apple WWDR / trust chain is missing or wrong during signing.
+- `manifest.json`/`signature` is stale (files changed after signing).
 
 ## Apple References
 
