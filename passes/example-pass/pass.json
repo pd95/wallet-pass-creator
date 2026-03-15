@@ -1,0 +1,29 @@
+{
+    "description": "Mini-Shop Store Card",
+    "formatVersion": 1,
+    "organizationName": "Mini-Shop",
+    "passTypeIdentifier": "pass.example.store-card.sample",
+    "serialNumber": "example-0001",
+    "teamIdentifier": "ABCDE12345",
+    "logoText": "Mini-Shop",
+    "backgroundColor": "rgb(242,248,255)",
+    "foregroundColor": "rgb(22,34,51)",
+    "labelColor": "rgb(60,90,120)",
+    "barcodes": [
+        {
+            "format": "PKBarcodeFormatCode128",
+            "message": "MINISHOP-0001",
+            "messageEncoding": "iso-8859-1",
+            "altText": "MINISHOP-0001"
+        }
+    ],
+    "storeCard": {
+        "primaryFields": [
+            {
+                "key": "member_number",
+                "label": "Card",
+                "value": "MINI-0001"
+            }
+        ]
+    }
+}

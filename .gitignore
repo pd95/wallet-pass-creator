@@ -1,0 +1,17 @@
+*.DS_Store
+
+build/*
+!build/.gitkeep
+
+tmp/*
+!tmp/.gitkeep
+passes/tmp_*
+passes/*.pkpass
+
+*.csr
+*.p12
+*.key
+*.pem
+
+certs/*
+!certs/.gitkeep

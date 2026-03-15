@@ -1,0 +1,63 @@
+{
+  "formatVersion": 1,
+  "passTypeIdentifier": "pass.example.store-card.sample",
+  "serialNumber": "multilang-0001",
+  "teamIdentifier": "ABCDE12345",
+  "organizationName": "organization_name",
+  "description": "description_text",
+  "logoText": "logo_text",
+  "backgroundColor": "rgb(246,248,252)",
+  "foregroundColor": "rgb(28,38,56)",
+  "labelColor": "rgb(68,93,132)",
+  "barcodes": [
+    {
+      "format": "PKBarcodeFormatQR",
+      "message": "https://example.com/wallet/mini-shop-plus/card/MULTILANG-0001",
+      "messageEncoding": "iso-8859-1",
+      "altText": "MULTILANG-0001"
+    }
+  ],
+  "storeCard": {
+    "headerFields": [
+      {
+        "key": "tier",
+        "label": "tier_label",
+        "value": "tier_value"
+      }
+    ],
+    "primaryFields": [
+      {
+        "key": "card_number",
+        "label": "card_label",
+        "value": "0001"
+      }
+    ],
+    "secondaryFields": [
+      {
+        "key": "member",
+        "label": "member_label",
+        "value": "Alex Example"
+      },
+      {
+        "key": "points",
+        "label": "points_label",
+        "value": 420
+      }
+    ],
+    "backFields": [
+      {
+        "key": "support",
+        "label": "support_label",
+        "value": "support_value"
+      },
+      {
+        "key": "updated",
+        "label": "updated_label",
+        "value": "2026-03-13T09:30:00Z",
+        "dateStyle": "PKDateStyleMedium",
+        "timeStyle": "PKDateStyleShort",
+        "isRelative": true
+      }
+    ]
+  }
+}
