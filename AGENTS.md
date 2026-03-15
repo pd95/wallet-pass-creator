@@ -29,6 +29,8 @@ Primary goals:
 
 1. Initialize pass keychain:
    - `bin/init-pass-keychain.sh <keychain_name> <password>`
+   - `<password>` is the password for the dedicated project keychain created under `certs/`
+   - It should be different from the macOS login keychain password
 2. Create CSR in Keychain Access for that keychain.
 3. In Apple Developer, create/download pass cert (`pass.cer`).
 4. Import cert:
@@ -48,7 +50,7 @@ Example with runtime overrides:
 
 - All scripts expect `<keychain_name>` without `.keychain-db`; scripts append it internally.
 - `bin/sign-pass.sh` currently ignores custom output path/password arguments from `README.md`; it uses:
-  - fixed export password `dummy123`
+  - a per-run random PKCS#12 export password for the temporary export
   - output path derived from input pass directory
 - `bin/sign-pass.sh` can override identifiers at sign time using certificate-derived values:
   - `--override-team` -> `teamIdentifier`

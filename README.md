@@ -49,6 +49,7 @@ Download Apple's WWDR certificate and store it as:
 
    This will create a new keychain DB under `certs/`, set its password and configuration
    and will open Keychain Access app to let you create a new public/private key pair along with the CSR request.
+   Use a dedicated password for this project keychain. Do not reuse your macOS login keychain password.
 
 2. Create CSR
 
@@ -89,8 +90,10 @@ Download Apple's WWDR certificate and store it as:
 
    `bin/sign-pass.sh` takes 3 required arguments:
    - `<keychain_name>` (without `.keychain-db`)
-   - `<password>`
+   - `<password>`: the password used to unlock the dedicated project keychain created by `bin/init-pass-keychain.sh`
    - `<pass_folder>` (relative or absolute path)
+
+   This password should be specific to the project keychain and different from your login keychain password.
 
    Optional certificate-derived overrides (applied only in temporary signing copy, source `pass.json` is unchanged):
    - `--override-team`

@@ -12,8 +12,6 @@ security create-keychain -p "$PASSWORD" "$KEYCHAIN_PATH" || true
 security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
 security unlock-keychain -p "$PASSWORD" "$KEYCHAIN_PATH"
 
-#security list-keychains -d user -s "$KEYCHAIN_PATH" ~/Library/Keychains/login.keychain-db
-
 echo "Keychain ready: $KEYCHAIN_PATH"
 
 
